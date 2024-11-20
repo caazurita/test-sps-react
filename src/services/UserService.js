@@ -1,21 +1,71 @@
-import axios from "axios";
+import storage from "../storage/storage";
 
+const getApiToken = () => {
+  return storage.get('access_token');
+}
 class UserService {
+  constructor(httpClient) {
+    this.httpClient = httpClient
+  }
   async list() {
-    const users = await axios.get(`${process.env.REACT_APP_SERVER_URL}/users`);
-    return users;
+    try {
+      const response = await this.httpClient.get("/users", {
+        headers: {
+          Authorization: `Bearer ${getApiToken()}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   }
   async get(id) {
-    throw new Error("Not implemented");
+    try {
+      const response = await this.httpClient.get(`/users/${id}`, {
+        headers: {
+          Authorization: `Bearer ${getApiToken()}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   }
   async create(data) {
-    throw new Error("Not implemented");
+    try {
+      const response = await this.httpClient.post("/users", data, {
+        headers: {
+          Authorization: `Bearer ${getApiToken()}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   }
   async delete(id) {
-    throw new Error("Not implemented");
+    try {
+      const response = await this.httpClient.delete(`/users/${id}`, {
+        headers: {
+          Authorization: `Bearer ${getApiToken()}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   }
   async update(id, data) {
-    throw new Error("Not implemented");
+    try {
+      const response = await this.httpClient.put(`/users/${id}`, data, {
+        headers: {
+          Authorization: `Bearer ${getApiToken()}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   }
 }
 
