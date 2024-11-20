@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import UserService from "../services/UserService";
 import axiosClient from "../utils/axiosClient";
@@ -9,7 +9,7 @@ import Layaout from "../components/Layout";
 
 
 
-const service = new UserService(axiosClient);
+
 export function userLoader({ params }) {
   const user = {
     id: params.userId,
@@ -20,25 +20,23 @@ export function userLoader({ params }) {
   return { user };
 }
 
-
+const service = new UserService(axiosClient);
 function EditUser() {
-  // const { user } = useLoaderData();
   const { userId } = useParams();
   const [data, setData] = useState(null);
 
   const [alert, setAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
 
-  const fetchData = () => {
+  const fetchData = useCallback(() => {
     service.get(userId)
       .then((response) => {
-        const data = response.data;
-        setData(data);
+        setData(response.data);
       }).catch((error) => {
         setAlert(true);
         setAlertMessage(error.response?.data.message || error.message);
       })
-  }
+  }, [userId]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -59,7 +57,7 @@ function EditUser() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   return (
     <Layaout>
